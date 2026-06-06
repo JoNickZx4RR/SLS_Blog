@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark" data-booting="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shift Left Security | Blog Académico</title>
+  <meta name="description" content="Blog académico sobre Shift Left Security: seguridad desde el inicio del desarrollo." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&f[]=cabinet-grotesk@400,500,700,800&display=swap" rel="stylesheet" />
+  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    :root,
+    [data-theme="dark"] {
+      --font-display: "Cabinet Grotesk", "Segoe UI", sans-serif;
+      --font-body: "Satoshi", "Inter", sans-serif;
+      --text-xs: clamp(0.76rem, 0.72rem + 0.12vw, 0.86rem);
+      --text-sm: clamp(0.88rem, 0.84rem + 0.18vw, 0.97rem);
+      --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
+      --text-lg: clamp(1.08rem, 0.98rem + 0.45vw, 1.32rem);
+      --text-xl: clamp(1.5rem, 1.15rem + 1.2vw, 2.15rem);
+      --text-2xl: clamp(2rem, 1.35rem + 2.6vw, 3.7rem);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --color-bg: #07111f;
+      --color-surface: rgba(12, 24, 43, 0.74);
+      --color-surface-2: rgba(17, 34, 58, 0.82);
+      --color-surface-3: rgba(10, 17, 31, 0.92);
+      --color-panel: rgba(207, 235, 255, 0.075);
+      --color-panel-strong: rgba(207, 235, 255, 0.11);
+      --color-border: rgba(148, 195, 255, 0.2);
+      --color-divider: rgba(160, 205, 255, 0.12);
+      --color-text: #eaf4ff;
+      --color-text-muted: #b6c7dc;
+      --color-text-faint: #87a0be;
+      --color-primary: #7fe4ff;
+      --color-primary-strong: #25b8df;
+      --color-cyan: #57d6ff;
+      --color-blue: #4e79ff;
+      --color-emerald: #74f0cf;
+      --color-gold: #ffd27d;
+      --shadow-lg: 0 24px 70px rgba(2, 11, 25, 0.42);
+      --shadow-md: 0 16px 34px rgba(2, 11, 25, 0.25);
+      --radius-sm: 0.75rem;
+      --radius-md: 1rem;
+      --radius-lg: 1.25rem;
+      --radius-xl: 1.6rem;
+      --radius-pill: 999px;
+      --content: min(1120px, calc(100vw - 2rem));
+      --transition: 260ms cubic-bezier(0.16, 1, 0.3, 1);
+      --theme-transition: 320ms cubic-bezier(0.16, 1, 0.3, 1);
+      --grid-line: rgba(100, 169, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, rgba(127, 228, 255, 0.24), rgba(78, 121, 255, 0.12));
+      --glass-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025));
+    }
+
+    [data-theme="light"] {
+      --color-bg: #eef5fb;
+      --color-surface: rgba(255, 255, 255, 0.82);
+      --color-surface-2: rgba(248, 252, 255, 0.94);
+      --color-surface-3: rgba(227, 237, 248, 0.96);
+      --color-panel: rgba(12, 70, 115, 0.05);
+      --color-panel-strong: rgba(12, 70, 115, 0.08);
+      --color-border: rgba(18, 72, 131, 0.16);
+      --color-divider: rgba(18, 72, 131, 0.1);
+      --color-text: #0e1f34;
+      --color-text-muted: #3e566f;
+      --color-text-faint: #627a94;
+      --color-primary: #007ead;
+      --color-primary-strong: #005d82;
+      --color-cyan: #1484cb;
+      --color-blue: #305fd8;
+      --color-emerald: #0b9d84;
+      --color-gold: #9f6c00;
+      --shadow-lg: 0 24px 56px rgba(39, 71, 107, 0.14);
+      --shadow-md: 0 14px 28px rgba(39, 71, 107, 0.1);
+      --grid-line: rgba(17, 83, 140, 0.08);
+      --accent-gradient: linear-gradient(135deg, rgba(20, 132, 203, 0.1), rgba(48, 95, 216, 0.06));
+      --glass-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5));
+    }
+
+    html[data-booting="true"] body { opacity: 0; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 6rem;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.68;
+      color: var(--color-text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(87, 214, 255, 0.14), transparent 26%),
+        radial-gradient(circle at 80% 0%, rgba(78, 121, 255, 0.15), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(116, 240, 207, 0.08), transparent 26%),
+        var(--color-bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition:
+        opacity 180ms ease,
+        background-color var(--theme-transition),
+        color var(--theme-transition),
+        border-color var(--theme-transition),
+        box-shadow var(--theme-transition);
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      transition: opacity var(--theme-transition), background var(--theme-transition);
+    }
+
+    body::before {
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(circle at center, black 48%, transparent 92%);
+      opacity: 0.82;
+    }
+
+    body::after {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 40%),
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.045), transparent 38%);
+      z-index: -1;
+    }
+
+    img, iframe, svg { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; background: none; border: none; color: inherit; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+    ::selection { background: rgba(87, 214, 255, 0.25); }
+
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+      border-radius: 0.5rem;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-pill);
+      background: var(--color-primary);
+      color: #fff;
+      z-index: 999;
+    }
+
+    .skip-link:focus { top: 1rem; }
+
+    .shell { width: var(--content); margin-inline: auto; position: relative; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: color-mix(in srgb, var(--color-bg) 76%, transparent);
+      border-bottom: 1.5px solid var(--color-divider);
+      transition:
+        background var(--theme-transition),
+        border-color var(--theme-transition),
+        box-shadow var(--theme-transition),
+        backdrop-filter var(--theme-transition);
+    }
+
+    .topbar-inner {
+      width: var(--content);
+      margin-inline: auto;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      padding: 0.72rem 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-width: 0;
+      flex: 0 1 auto;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1.5px solid var(--color-border);
+      background:
+        linear-gradient(135deg, rgba(127, 228, 255, 0.15), rgba(255, 255, 255, 0.03)),
+        rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-md);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: background var(--theme-transition), border-color var(--theme-transition), box-shadow var(--theme-transition);
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 0.97rem;
+      letter-spacing: 0.01em;
+      line-height: 1.05;
+    }
+
+    .brand-copy span {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: 0.73rem;
+      line-height: 1.25;
+      margin-top: 0.18rem;
+      white-space: nowrap;
+    }
+
+    .topnav {
+      display: flex;
+      align-items: center;
+      gap: 0.28rem;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0.12rem;
+    }
+
+    .topnav::-webkit-scrollbar { display: none; }
+
+    .topnav a,
+    .icon-btn {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.62rem 0.8rem;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid transparent;
+      color: var(--color-text-muted);
+      transition:
+        transform var(--transition),
+        color var(--theme-transition),
+        border-color var(--theme-transition),
+        background var(--theme-transition),
+        box-shadow var(--theme-transition);
+      white-space: nowrap;
+      font-size: 0.84rem;
+      letter-spacing: 0.01em;
+      flex: 0 0 auto;
+      background-clip: padding-box;
+    }
+
+    .topnav a:hover,
+    .topnav a.is-active,
+    .icon-btn:hover,
+    .icon-btn:focus-visible {
+      color: var(--color-text);
+      border-color: var(--color-border);
+      background: var(--color-panel);
+      box-shadow: 0 0 0 1px rgba(127, 228, 255, 0.05);
+      transform: translateY(-1px);
+    }
+
+    .icon-btn {
+      min-width: 46px;
+      padding-inline: 0.82rem;
+      border-width: 1.8px;
+    }
+
+    .progress {
+      position: fixed;
+      inset: 0 auto auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-blue));
+      width: 0%;
+      z-index: 60;
+      box-shadow: 0 0 18px rgba(87, 214, 255, 0.42);
+      transition: width 100ms linear, background var(--theme-transition), box-shadow var(--theme-transition);
+    }
+
+    .hero {
+      padding: clamp(1.5rem, 3vw, 2.5rem) 0 2rem;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: var(--space-6);
+      align-items: stretch;
+    }
+
+    .panel,
+    .card,
+    .cover-box,
+    .quote-card,
+    .code-card,
+    .agile-table-wrap,
+    .analysis-table-wrap,
+    .story-step,
+    .timeline-row,
+    .legend-item,
+    .principle,
+    .callout,
+    .schema,
+    .image-modal-dialog {
+      background-clip: padding-box;
+      transition:
+        background var(--theme-transition),
+        border-color var(--theme-transition),
+        box-shadow var(--theme-transition),
+        color var(--theme-transition);
+    }
+
+    .panel {
+      border: 1.5px solid var(--color-border);
+      background: var(--glass-gradient), var(--color-surface);
+      backdrop-filter: blur(16px) saturate(130%);
+      -webkit-backdrop-filter: blur(16px) saturate(130%);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 25%);
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      padding: clamp(1.2rem, 2.6vw, 1.7rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-6);
+      min-height: 500px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: fit-content;
+      padding: 0.44rem 0.78rem;
+      border-radius: var(--radius-pill);
+      border: 1.4px solid var(--color-border);
+      background: var(--color-panel);
+      color: var(--color-primary);
+      font-size: var(--text-xs);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      transition: background var(--theme-transition), border-color var(--theme-transition), color var(--theme-transition);
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    h1 { font-size: var(--text-2xl); max-width: 12ch; }
+
+    .hero-copy p.lead {
+      max-width: 60ch;
+      color: var(--color-text-muted);
+      font-size: var(--text-lg);
+      margin-top: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.4rem;
+    }
+
+    .btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.84rem 1.05rem;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--color-border);
+      transition:
+        transform var(--transition),
+        background var(--theme-transition),
+        border-color var(--theme-transition),
+        color var(--theme-transition),
+        box-shadow var(--theme-transition);
+      font-size: var(--text-sm);
+      background-clip: padding-box;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-strong));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 12px 26px rgba(37, 184, 223, 0.24);
+    }
+
+    .btn-secondary {
+      background: var(--color-panel);
+      color: var(--color-text);
+    }
+
+    .hero-visual {
+      padding: 1.15rem;
+      min-height: 500px;
+      display: grid;
+      align-content: start;
+      gap: 0.9rem;
+    }
+
+    .diagram-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .diagram-top strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    .schema {
+      position: relative;
+      min-height: 350px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: color-mix(in srgb, var(--color-surface-3) 88%, #000 12%);
+      border: 1.5px solid rgba(127, 228, 255, 0.16);
+      box-shadow: var(--shadow-md);
+    }
+
+    .schema img {
+      width: 100%;
+      height: 100%;
+      min-height: 350px;
+      object-fit: cover;
+      object-position: center;
+      background: #fff;
+    }
+
+    .image-expand-btn {
+      position: absolute;
+      top: 0.85rem;
+      right: 0.85rem;
+      z-index: 2;
+      min-width: 46px;
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.72rem 0.9rem;
+      border-radius: var(--radius-pill);
+      border: 1.6px solid var(--color-border);
+      background: color-mix(in srgb, var(--color-bg) 68%, transparent);
+      color: var(--color-text);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-md);
+      transition:
+        transform var(--transition),
+        background var(--theme-transition),
+        border-color var(--theme-transition),
+        color var(--theme-transition),
+        box-shadow var(--theme-transition);
+    }
+
+    .image-expand-btn:hover,
+    .image-expand-btn:focus-visible {
+      transform: translateY(-1px);
+      background: var(--color-panel-strong);
+      border-color: var(--color-border);
+    }
+
+    .schema-caption {
+      position: absolute;
+      left: 0.85rem;
+      bottom: 0.85rem;
+      z-index: 2;
+      max-width: min(88%, 38rem);
+      padding: 0.55rem 0.75rem;
+      border-radius: 0.9rem;
+      border: 1.2px solid rgba(255, 255, 255, 0.09);
+      background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      line-height: 1.45;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .legend-item {
+      padding: 0.82rem;
+      border: 1.5px solid var(--color-border);
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+
+    .legend-item strong {
+      display: block;
+      color: var(--color-text);
+      margin-bottom: 0.25rem;
+    }
+
+    .section {
+      padding: clamp(2.35rem, 6vw, 4.2rem) 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: 1rem;
+    }
+
+    .section-head p {
+      max-width: 60ch;
+      color: var(--color-text-muted);
+    }
+
+    .section-kicker {
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: var(--text-xs);
+      margin-bottom: 0.45rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+
+    .card {
+      padding: 1.1rem;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)),
+        var(--color-surface-2);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card h3 { font-size: 1.08rem; margin-bottom: 0.55rem; }
+    .card p, .card li { color: var(--color-text-muted); }
+    .card ul { padding-left: 1rem; }
+    .card ul li + li { margin-top: 0.48rem; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.9rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.38rem;
+      min-height: 34px;
+      padding: 0.4rem 0.72rem;
+      border: 1.4px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      font-size: var(--text-xs);
+      color: var(--color-text);
+      background: var(--color-panel);
+      transition: background var(--theme-transition), border-color var(--theme-transition), color var(--theme-transition);
+    }
+
+    .cover-meta {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1rem;
+    }
+
+    .cover-box {
+      padding: 1.1rem;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background: var(--accent-gradient), var(--color-surface-2);
+      min-height: 100%;
+    }
+
+    .cover-box h3 { margin-bottom: 0.85rem; }
+
+    .meta-list {
+      list-style: none;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .meta-list li {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-start;
+      color: var(--color-text-muted);
+      padding-bottom: 0.6rem;
+      border-bottom: 1px dashed var(--color-divider);
+    }
+
+    .meta-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+    .meta-label { min-width: 98px; color: var(--color-text-faint); font-size: var(--text-sm); }
+    .meta-value { color: var(--color-text); font-weight: 500; }
+
+    .storyline { display: grid; gap: 0.9rem; }
+
+    .story-step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.9rem;
+      align-items: start;
+      padding: 0.95rem 1rem;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background: var(--color-panel);
+    }
+
+    .story-step .badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(127, 228, 255, 0.22), rgba(78, 121, 255, 0.1));
+      border: 1.4px solid var(--color-border);
+      color: var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .dual-definition {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .quote-card {
+      padding: 1.1rem;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background:
+        linear-gradient(135deg, rgba(127, 228, 255, 0.08), rgba(255, 255, 255, 0.02)),
+        var(--color-surface-2);
+      min-height: 100%;
+    }
+
+    .quote-card p { color: var(--color-text); font-size: 1rem; }
+    .quote-card footer { margin-top: 0.85rem; color: var(--color-text-faint); font-size: var(--text-sm); }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(210px, 1fr));
+      gap: 0.9rem;
+      overflow-x: auto;
+      padding-bottom: 0.2rem;
+      scrollbar-width: thin;
+    }
+
+    .principle {
+      min-width: 210px;
+      padding: 1rem;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background: var(--glass-gradient), var(--color-surface-2);
+    }
+
+    .principle .index {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      color: var(--color-primary);
+      margin-bottom: 0.45rem;
+    }
+
+    .video-card { display: grid; gap: 0.9rem; }
+
+    .video-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      border: 1.5px solid var(--color-border);
+      background: var(--color-surface-3);
+      box-shadow: var(--shadow-md);
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-wrap iframe { width: 100%; height: 100%; border: 0; }
+
+    .video-credit {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+
+    .video-credit a {
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18rem;
+    }
+
+    .impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .mini-timeline { display: grid; gap: 0.75rem; }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 148px 1fr;
+      gap: 0.85rem;
+      align-items: start;
+      padding: 0.9rem 1rem;
+      border-radius: 1rem;
+      border: 1.5px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .timeline-row strong {
+      color: var(--color-primary);
+      font-size: var(--text-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .agile-table-wrap,
+    .analysis-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background: var(--color-surface-2);
+      box-shadow: var(--shadow-md);
+    }
+
+    th, td {
+      padding: 0.88rem 0.85rem;
+      border-bottom: 1px solid var(--color-divider);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th { background: rgba(255, 255, 255, 0.04); color: var(--color-text); font-size: var(--text-sm); }
+    td { color: var(--color-text-muted); font-size: var(--text-sm); }
+    tr:last-child td { border-bottom: none; }
+
+    .code-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .code-card {
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--color-surface-3);
+      box-shadow: var(--shadow-md);
+    }
+
+    .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--color-divider);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .code-head strong { color: var(--color-text); font-size: var(--text-sm); letter-spacing: 0.02em; }
+    .code-tone { display: inline-flex; gap: 0.35rem; }
+    .dot { width: 10px; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.25); }
+    .dot.red { background: #ff7d7d; }
+    .dot.yellow { background: #ffd16a; }
+    .dot.green { background: #6fe8bc; }
+
+    pre {
+      overflow: auto;
+      padding: 1.05rem;
+      font-size: 0.86rem;
+      line-height: 1.62;
+      color: #dceaff;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent), #091220;
+    }
+
+    .callout {
+      padding: 0.95rem 1.05rem;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background: linear-gradient(135deg, rgba(116, 240, 207, 0.1), rgba(127, 228, 255, 0.05));
+      color: var(--color-text);
+    }
+
+    .callout strong { color: var(--color-emerald); }
+
+    .split-note {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .cite {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      padding: 0.18rem 0.42rem;
+      margin-left: 0.18rem;
+      border-radius: 999px;
+      background: rgba(127, 228, 255, 0.09);
+      border: 1.2px solid rgba(127, 228, 255, 0.14);
+      color: var(--color-primary);
+      font-size: 0.72rem;
+      line-height: 1.2;
+      vertical-align: middle;
+      white-space: nowrap;
+      transition: background var(--theme-transition), border-color var(--theme-transition), color var(--theme-transition);
+    }
+
+    .bibliography {
+      display: grid;
+      gap: 0.8rem;
+      list-style: none;
+    }
+
+    .bibliography li {
+      padding: 1rem;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--color-border);
+      background: var(--color-surface-2);
+      color: var(--color-text-muted);
+      transition: background var(--theme-transition), border-color var(--theme-transition), color var(--theme-transition), box-shadow var(--theme-transition);
+    }
+
+    .bibliography a {
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18rem;
+      word-break: break-word;
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      place-items: center;
+      padding: 1.2rem;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 220ms ease, visibility 220ms ease;
+    }
+
+    .image-modal.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .image-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 10, 18, 0.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .image-modal-dialog {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100vw - 2rem));
+      max-height: calc(100vh - 2rem);
+      padding: 0.95rem;
+      border-radius: 1.35rem;
+      border: 1.5px solid var(--color-border);
+      background: var(--glass-gradient), var(--color-surface);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .image-modal-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.85rem;
+    }
+
+    .image-modal-toolbar strong {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-text);
+    }
+
+    .image-modal-close {
+      min-width: 46px;
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-pill);
+      border: 1.6px solid var(--color-border);
+      background: var(--color-panel);
+      color: var(--color-text);
+      transition:
+        transform var(--transition),
+        background var(--theme-transition),
+        border-color var(--theme-transition);
+    }
+
+    .image-modal-close:hover,
+    .image-modal-close:focus-visible {
+      transform: translateY(-1px);
+      background: var(--color-panel-strong);
+    }
+
+    .image-modal-figure {
+      border-radius: 1rem;
+      overflow: auto;
+      max-height: calc(100vh - 8rem);
+      background: #fff;
+    }
+
+    .image-modal-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .footer {
+      padding: 0.8rem 0 2.5rem;
+      color: var(--color-text-faint);
+      text-align: center;
+      font-size: var(--text-sm);
+      transition: color var(--theme-transition);
+    }
+
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    [data-reveal].visible { opacity: 1; transform: translateY(0); }
+
+    @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+      .topbar,
+      .panel,
+      .brand-mark,
+      .image-expand-btn,
+      .schema-caption,
+      .image-modal-backdrop {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+      .topbar { background: color-mix(in srgb, var(--color-bg) 92%, transparent); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      body, body::before, body::after, .topbar, .panel, .card, .cover-box, .quote-card, .code-card, .btn, .topnav a, .icon-btn, .schema, .image-modal, .image-modal-dialog {
+        transition: none !important;
+      }
+      [data-reveal] { opacity: 1; transform: none; transition: none; }
+      .topnav a:hover, .btn:hover, .icon-btn:hover, .image-expand-btn:hover, .image-modal-close:hover { transform: none; }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .cover-meta,
+      .impact-grid,
+      .grid-3,
+      .grid-2,
+      .code-grid,
+      .split-note,
+      .dual-definition {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy,
+      .hero-visual { min-height: auto; }
+
+      .legend { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 920px) {
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 0.85rem 0;
+      }
+
+      .topnav {
+        width: 100%;
+        justify-content: flex-start;
+        padding-bottom: 0.2rem;
+      }
+
+      .section-head {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .timeline-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .shell { width: min(100vw - 1rem, 100%); }
+      .topbar-inner { width: min(100vw - 1rem, 100%); }
+      .hero { padding-top: 2.6rem; }
+      .hero-copy { padding: 1rem; }
+      .hero-visual { padding: 0.95rem; }
+      .card, .cover-box, .quote-card, .principle { padding: 0.95rem; }
+      th, td { padding: 0.78rem 0.72rem; }
+      .meta-label { min-width: 84px; }
+      .brand-copy span { white-space: normal; }
+      .image-expand-btn {
+        top: 0.65rem;
+        right: 0.65rem;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.68rem;
+      }
+      .schema-caption {
+        left: 0.65rem;
+        right: 0.65rem;
+        bottom: 0.65rem;
+        max-width: none;
+      }
+      .image-modal-dialog {
+        width: calc(100vw - 1rem);
+        padding: 0.75rem;
+      }
+    }
+  </style>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const currentTheme = root.getAttribute("data-theme") || (prefersDark ? "dark" : "light");
+      root.setAttribute("data-theme", currentTheme);
+      root.setAttribute("data-booting", "true");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <div class="progress" id="progressBar" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#portada" class="brand" aria-label="Ir a la portada del blog">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="28" height="28" fill="none">
+            <path d="M12 18L32 8l20 10v28L32 56 12 46V18Z" stroke="currentColor" stroke-width="2.4"></path>
+            <path d="M22 24h20M22 32h12M22 40h20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <strong>Shift Left Security</strong>
+          <span>Blog académico • Ingeniería de software</span>
+        </span>
+      </a>
+
+      <nav class="topnav" aria-label="Navegación principal">
+        <a href="#presentacion">Grupo</a>
+        <a href="#introduccion">Introducción</a>
+        <a href="#definicion">Concepto</a>
+        <a href="#problema">Problema</a>
+        <a href="#agile">Sprints</a>
+        <a href="#caso">Caso aplicado</a>
+        <a href="#reflexion">Reflexión</a>
+        <button class="icon-btn" id="themeToggle" data-theme-toggle aria-label="Cambiar tema">
+          <i data-lucide="moon"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero shell" id="portada">
+      <div class="hero-grid">
+        <article class="panel hero-copy" data-reveal>
+          <div>
+            <span class="eyebrow">
+              <i data-lucide="shield"></i>
+              Desarrollo seguro desde el primer commit
+            </span>
+
+            <h1 id="siteThemeTitle">Shift Left Security: Seguridad desde el inicio del desarrollo</h1>
+
+            <p class="lead">
+              Este blog presenta una lectura académica y visual de Shift Left Security como estrategia para integrar
+              seguridad en diseño, desarrollo, integración y revisión continua, evitando que la protección del software
+              llegue tarde, fragmentada o costosa.
+            </p>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#definicion" class="btn btn-primary">
+              <i data-lucide="arrow-down"></i>
+              Explorar contenido
+            </a>
+            <a href="#caso" class="btn btn-secondary">
+              <i data-lucide="file-code-2"></i>
+              Ver caso técnico
+            </a>
+          </div>
+        </article>
+
+        <aside class="panel hero-visual" data-reveal>
+          <div class="diagram-top">
+            <strong>Arquitectura conceptual</strong>
+            <span>Flujo de protección y respuesta en AWS WAF</span>
+          </div>
+
+          <figure class="schema">
+            <button
+              class="image-expand-btn"
+              type="button"
+              id="openDiagramModal"
+              aria-label="Ampliar diagrama"
+              title="Ampliar diagrama"
+            >
+              <i data-lucide="expand"></i>
+            </button>
+
+            <img
+              src="./SL_Diagram_AWS.png"
+              alt="Diagrama de arquitectura con AWS WAF, CloudFront, balanceador, registros, Athena, Lambda y reglas para mitigación de tráfico malicioso."
+              loading="eager"
+              decoding="async"
+              width="800"
+              height="800"
+            />
+
+            <figcaption class="schema-caption">
+              Arquitectura de referencia donde AWS WAF filtra el tráfico y conecta la protección perimetral con registros,
+              análisis y respuestas automatizadas.
+            </figcaption>
+          </figure>
+
+          <div class="legend">
+            <div class="legend-item">
+              <strong>Lectura del flujo</strong>
+              Los usuarios válidos avanzan hacia la aplicación mientras AWS WAF intercepta y filtra tráfico malicioso antes de llegar al servicio principal.
+            </div>
+            <div class="legend-item">
+              <strong>Valor práctico</strong>
+              El diagrama muestra cómo logs, análisis y reglas automatizadas refuerzan una estrategia temprana de defensa.
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section shell" id="presentacion">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="users"></i>
+            Presentación del grupo
+          </span>
+          <h2>Datos académicos</h2>
+        </div>
+      </div>
+
+      <div class="cover-meta" data-reveal>
+        <article class="cover-box">
+          <h3>Ficha académica</h3>
+          <ul class="meta-list">
+            <li><span class="meta-label">Institución</span><span class="meta-value" id="institutionName">Nombre de la Institución</span></li>
+            <li><span class="meta-label">Tema</span><span class="meta-value" id="themeName">Shift Left Security: Seguridad desde el inicio del desarrollo</span></li>
+            <li><span class="meta-label">Materia</span><span class="meta-value" id="subjectName">Nombre de la Materia</span></li>
+            <li><span class="meta-label">Docente</span><span class="meta-value" id="teacherName">Nombre del Docente</span></li>
+            <li><span class="meta-label">Curso</span><span class="meta-value" id="courseName">Curso</span></li>
+            <li><span class="meta-label">Año</span><span class="meta-value" id="yearName">2026</span></li>
+          </ul>
+        </article>
+
+        <article class="cover-box">
+          <h3>Integrantes</h3>
+          <ul class="meta-list" id="membersList"></ul>
+          <div class="chips">
+            <span class="chip"><i data-lucide="shield-check"></i> Ciberseguridad aplicada</span>
+            <span class="chip"><i data-lucide="workflow"></i> DevSecOps</span>
+            <span class="chip"><i data-lucide="cpu"></i> Ingeniería de software</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" id="introduccion">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="book-open-text"></i>
+            1. Introducción
+          </span>
+          <h2>Una historia técnica que empieza antes</h2>
+        </div>
+        <p>
+          En muchos proyectos, los ingenieros construyen primero y preguntan por seguridad después. El problema aparece
+          cuando el software ya está acoplado, desplegado o cerca de entrega, porque entonces cada corrección deja de
+          ser un parche de rutina y se convierte en un tradeoff entre tiempo, arquitectura y riesgo.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <article class="card" data-reveal>
+          <h3>Relato general</h3>
+          <p>
+            Shift Left Security propone una idea disciplinada y práctica: la seguridad no debe aparecer como auditoría
+            tardía, sino como criterio de diseño desde el nacimiento del producto. Bajo esta lógica, el trabajo del
+            ingeniero cambia; ya no consiste solo en hacer que el sistema funcione, sino en hacer que funcione con
+            resiliencia, evidencia y control.
+          </p>
+          <div class="chips">
+            <span class="chip"><i data-lucide="drafting-compass"></i> Diseño preventivo</span>
+            <span class="chip"><i data-lucide="git-branch"></i> Integración continua</span>
+            <span class="chip"><i data-lucide="sparkles"></i> Decisiones más conscientes</span>
+          </div>
+        </article>
+
+        <article class="card" data-reveal>
+          <h3>Perfil del ingeniero en este enfoque</h3>
+          <ul>
+            <li>Piensa en amenazas desde el modelado y no solo en el despliegue.</li>
+            <li>Recibe retroalimentación de seguridad en su flujo diario de trabajo.</li>
+            <li>Entiende que automatizar controles no elimina criterio, sino que lo vuelve constante.</li>
+            <li>Trabaja con seguridad como parte del producto y no como trámite externo.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="storyline" style="margin-top: 1rem;" data-reveal>
+        <div class="story-step">
+          <div class="badge"><i data-lucide="pencil-ruler"></i></div>
+          <div>
+            <h3>Antes del código</h3>
+            <p>Se definen requisitos, límites y riesgos. El fallo corregido aquí es conocimiento; corregido tarde es costo.</p>
+          </div>
+        </div>
+
+        <div class="story-step">
+          <div class="badge"><i data-lucide="scan-search"></i></div>
+          <div>
+            <h3>Durante el desarrollo</h3>
+            <p>El pipeline y las herramientas cercanas al desarrollador advierten vulnerabilidades mientras el cambio aún está fresco.</p>
+          </div>
+        </div>
+
+        <div class="story-step">
+          <div class="badge"><i data-lucide="server-cog"></i></div>
+          <div>
+            <h3>Antes de producción</h3>
+            <p>La entrega ya no depende de una revisión de último minuto; depende de evidencia acumulada en cada etapa.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="definicion">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="badge-info"></i>
+            2. Concepto
+          </span>
+          <h2>Dos definiciones y cinco principios</h2>
+        </div>
+        <p>
+          El concepto puede entenderse desde una definición estratégica y desde una definición operativa. Ambas
+          coinciden en que la seguridad debe adelantarse y ejecutarse con continuidad, no solo como evaluación final.
+        </p>
+      </div>
+
+      <div class="dual-definition" data-reveal>
+        <blockquote class="quote-card">
+          <p>
+            Shift Left Security es una estrategia de desarrollo seguro que mueve las actividades de seguridad hacia las
+            primeras fases del ciclo de vida del software para detectar y corregir vulnerabilidades con menor costo y
+            menor impacto operativo.
+          </p>
+          <footer>
+            Definición sintética integrada
+            <span class="cite">GitGuardian, 2025</span>
+            <span class="cite">Nair, 2021</span>
+            <span class="cite">GitLab, 2026</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="quote-card">
+          <p>
+            En términos operativos, Shift Left Security significa incorporar requisitos, modelado de amenazas,
+            análisis automatizados, políticas y retroalimentación visible dentro del flujo real de trabajo del equipo,
+            con responsabilidad compartida entre desarrollo, operaciones y seguridad.
+          </p>
+          <footer>
+            Definición operativa integrada
+            <span class="cite">OWASP, 2020</span>
+            <span class="cite">GitLab, 2026</span>
+          </footer>
+        </blockquote>
+      </div>
+
+      <div class="principles" data-reveal aria-label="Cinco principios">
+        <article class="principle">
+          <div class="index">01</div>
+          <h3>Seguridad desde el diseño</h3>
+          <p>
+            Los requisitos de seguridad nacen junto con la arquitectura, las historias de usuario y el análisis de amenazas.
+            <span class="cite">OWASP, 2020</span>
+          </p>
+        </article>
+
+        <article class="principle">
+          <div class="index">02</div>
+          <h3>Automatización temprana</h3>
+          <p>
+            SAST, SCA, análisis de secretos, escaneo de contenedores e infraestructura como código deben correr dentro del pipeline.
+            <span class="cite">Nair, 2021</span>
+            <span class="cite">GitGuardian, 2025</span>
+          </p>
+        </article>
+
+        <article class="principle">
+          <div class="index">03</div>
+          <h3>Responsabilidad compartida</h3>
+          <p>
+            La seguridad deja de ser un filtro tardío y se convierte en un trabajo coordinado entre roles técnicos.
+            <span class="cite">OWASP, 2020</span>
+          </p>
+        </article>
+
+        <article class="principle">
+          <div class="index">04</div>
+          <h3>Retroalimentación continua</h3>
+          <p>
+            El valor no está solo en encontrar fallos, sino en encontrarlos cuando todavía se entienden y se pueden corregir con rapidez.
+            <span class="cite">Nair, 2021</span>
+            <span class="cite">GitLab, 2026</span>
+          </p>
+        </article>
+
+        <article class="principle">
+          <div class="index">05</div>
+          <h3>Herramientas cercanas al desarrollador</h3>
+          <p>
+            La seguridad debe aparecer en IDE, repositorios, hooks y revisiones, no en reportes lejanos y tardíos.
+            <span class="cite">GitGuardian, 2025</span>
+            <span class="cite">Nair, 2021</span>
+          </p>
+        </article>
+      </div>
+
+      <div class="grid-2" style="margin-top: 1rem;">
+        <article class="card" data-reveal>
+          <h3>Lectura breve</h3>
+          <p>
+            Dicho de forma simple, Shift Left Security cambia el punto de intervención. Si antes la seguridad llegaba
+            al final para descubrir problemas, ahora acompaña el proceso desde el inicio para impedir que esos problemas
+            crezcan y se hagan estructurales.
+          </p>
+          <div class="chips">
+            <span class="chip"><i data-lucide="badge-alert"></i> Menor retrabajo</span>
+            <span class="chip"><i data-lucide="radar"></i> Mayor visibilidad</span>
+            <span class="chip"><i data-lucide="lock-keyhole"></i> Menor exposición</span>
+          </div>
+        </article>
+
+        <article class="card video-card" data-reveal>
+          <div>
+            <h3>Apoyo audiovisual</h3>
+            <p style="color: var(--color-text-muted); margin-top: 0.45rem;">
+              Este recurso explica de forma clara qué significa Shift-Left Security y cómo se integra en ciclos modernos de desarrollo.
+            </p>
+          </div>
+
+          <div class="video-wrap">
+            <iframe
+              id="youtubeFrame"
+              title="What is Shift-Left Security? - IBM Technology"
+              src="https://www.youtube.com/embed/vOpIbH4RQ70?cc_lang_pref=es&cc_load_policy=1&rel=0"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <p class="video-credit">
+            Créditos: <strong>IBM Technology</strong>. Video original en YouTube:
+            <a href="https://www.youtube.com/watch?v=vOpIbH4RQ70" target="_blank" rel="noopener noreferrer">What is Shift-Left Security?</a>
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" id="problema">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="triangle-alert"></i>
+            3. Problema
+          </span>
+          <h2>Cuando la seguridad llega tarde, el costo se multiplica</h2>
+        </div>
+        <p>
+          El enfoque tradicional suele revisar seguridad cuando el sistema ya está construido o casi desplegado. En ese
+          punto, una vulnerabilidad rara vez se corrige sola: arrastra decisiones de diseño, dependencias, pruebas y
+          tiempo de entrega.
+        </p>
+      </div>
+
+      <div class="impact-grid">
+        <article class="card" data-reveal>
+          <h3>Problemas frecuentes del modelo tardío</h3>
+          <ul>
+            <li>Las vulnerabilidades se descubren cuando cambiar el código ya impacta en cronograma y arquitectura.</li>
+            <li>El equipo corrige a contrarreloj y la seguridad compite con la entrega.</li>
+            <li>La retroalimentación llega desconectada del contexto real del desarrollador.</li>
+            <li>Se normaliza el retrabajo como si fuera parte inevitable del proyecto.</li>
+          </ul>
+        </article>
+
+        <article class="card" data-reveal>
+          <h3>Qué corrige Shift Left Security</h3>
+          <ul>
+            <li>Reduce el desfase entre creación del cambio y detección del problema.</li>
+            <li>Disminuye la probabilidad de incidentes y configuraciones débiles en producción.</li>
+            <li>Integra seguridad y cumplimiento al flujo de entrega normal.</li>
+            <li>
+              Transforma la seguridad en evidencia continua y no en examen final.
+              <span class="cite">GitLab, 2026</span>
+              <span class="cite">GitGuardian, 2025</span>
+            </li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="mini-timeline" style="margin-top: 1rem;" data-reveal>
+        <div class="timeline-row">
+          <strong>Detección tardía</strong>
+          <div>Se encuentra un fallo cuando el módulo ya depende de varios componentes; corregir implica tocar más piezas de las previstas.</div>
+        </div>
+        <div class="timeline-row">
+          <strong>Reacción costosa</strong>
+          <div>El equipo debe reprogramar tareas, revisar pruebas, ajustar despliegues y negociar tiempos con presión creciente.</div>
+        </div>
+        <div class="timeline-row">
+          <strong>Prevención temprana</strong>
+          <div>
+            Con Shift Left, el error se detecta más cerca del origen y puede resolverse como mejora puntual, no como crisis de entrega.
+            <span class="cite">Nair, 2021</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 1rem;" data-reveal>
+        <strong>Idea clave:</strong> en seguridad de software, encontrar temprano no es solo una ventaja técnica; es una ventaja económica, organizativa y de calidad del producto.
+      </div>
+    </section>
+
+    <section class="section shell" id="agile">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="kanban-square"></i>
+            4. Sprints
+          </span>
+          <h2>Seguridad integrada al ritmo de iteración</h2>
+        </div>
+        <p>
+          En equipos ágiles, cada sprint produce incrementos funcionales pequeños. Shift Left Security encaja con esa
+          lógica porque permite insertar controles preventivos en cada historia, cada merge request y cada ciclo de
+          prueba, en lugar de acumular deuda para el final.
+        </p>
+      </div>
+
+      <div class="agile-table-wrap" data-reveal>
+        <table aria-label="Relación entre sprints y seguridad">
+          <thead>
+            <tr>
+              <th>Sprint</th>
+              <th>Actividad</th>
+              <th>Seguridad incorporada</th>
+              <th>Valor de Shift Left</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sprint 1</strong></td>
+              <td>Login</td>
+              <td>Validación de entrada, política de contraseñas, revisión de manejo de errores, pruebas iniciales de autenticación.</td>
+              <td>La seguridad se incorpora cuando el módulo todavía es pequeño y modificable.</td>
+            </tr>
+            <tr>
+              <td><strong>Sprint 2</strong></td>
+              <td>Registro y recuperación</td>
+              <td>Controles de secretos, revisión de flujos de recuperación, rate limiting y validación del almacenamiento de credenciales.</td>
+              <td>Se evitan malas prácticas persistentes desde el inicio del flujo de identidad.</td>
+            </tr>
+            <tr>
+              <td><strong>Sprint 3</strong></td>
+              <td>Comentarios o interacción de usuario</td>
+              <td>Codificación de salida, sanitización, control de longitud, reglas de autorización, revisión de XSS.</td>
+              <td>La funcionalidad nace con barreras contra abuso y contenido malicioso.</td>
+            </tr>
+            <tr>
+              <td><strong>Sprint 4</strong></td>
+              <td>Pipeline de despliegue</td>
+              <td>SAST, SCA, escaneo de secretos y políticas de despliegue automatizadas.</td>
+              <td>El entorno de entrega se convierte en evidencia de seguridad repetible.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="split-note" data-reveal>
+        <article class="card">
+          <h3>Lectura ágil correcta</h3>
+          <p>
+            Integrar seguridad en sprints no significa frenar el equipo con revisiones manuales interminables.
+            Significa definir qué control corresponde a cada incremento y automatizar todo lo que pueda ejecutarse de
+            manera temprana y frecuente.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Relación con DevSecOps</h3>
+          <p>
+            La convergencia con DevSecOps es directa: el sprint aporta el ritmo, el pipeline aporta la automatización y
+            Shift Left aporta el criterio de anticipación.
+            <span class="cite">OWASP, 2020</span>
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" id="caso">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="file-lock-2"></i>
+            5. Caso aplicado
+          </span>
+          <h2>De un flujo vulnerable a una implementación más segura</h2>
+        </div>
+        <p>
+          El siguiente ejemplo representa un caso académico útil para analizar cómo una funcionalidad aparentemente
+          sencilla puede almacenar y mostrar contenido sin controles suficientes. La corrección no se limita a una
+          línea; implica rediseñar el flujo con validación, codificación de salida, control de acceso y disciplina
+          operativa.
+        </p>
+      </div>
+
+      <div class="code-grid" data-reveal>
+        <article class="code-card">
+          <div class="code-head">
+            <strong>Código vulnerable</strong>
+            <span class="code-tone" aria-hidden="true">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </span>
+          </div>
+          <pre><code>// Guardar comentario
+String comentario = request.getParameter("comentario");
+Connection con = getConnection();
+PreparedStatement ps = con.prepareStatement(
+    "INSERT INTO comentarios(texto) VALUES (?)"
+);
+ps.setString(1, comentario);
+ps.executeUpdate();
+
+// Mostrar comentarios
+Statement st = con.createStatement();
+ResultSet rs = st.executeQuery("SELECT * FROM comentarios");
+
+while (rs.next()) {
+    out.println("&lt;p&gt;" + rs.getString("texto") + "&lt;/p&gt;");
+}</code></pre>
+        </article>
+
+        <article class="code-card">
+          <div class="code-head">
+            <strong>Lectura inicial del caso</strong>
+            <span class="code-tone" aria-hidden="true">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </span>
+          </div>
+          <pre><code>Riesgos visibles:
+1. La salida HTML imprime contenido no codificado.
+2. No hay validación de longitud ni formato.
+3. No se observa control de autorización.
+4. La consulta y los recursos carecen de manejo seguro.
+5. La corrección debe atacar flujo, no solo sintaxis.</code></pre>
+        </article>
+      </div>
+
+      <div class="analysis-table-wrap" style="margin-top: 1rem;" data-reveal>
+        <table aria-label="Tabla de análisis de vulnerabilidades">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Vulnerabilidad</th>
+              <th>Evidencia en el código</th>
+              <th>OWASP Top 10</th>
+              <th>Tipo de prueba</th>
+              <th>¿Manual / Automática?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>XSS almacenado</strong></td>
+              <td>Se imprime <code>rs.getString("texto")</code> directamente en HTML con <code>out.println</code> sin codificación contextual.</td>
+              <td>A03:2021 Injection</td>
+              <td>SAST, DAST y prueba manual de payload persistente.</td>
+              <td>Ambas; automática para detección temprana y manual para confirmar explotación.</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Entrada sin validación</strong></td>
+              <td><code>request.getParameter("comentario")</code> se usa sin validar longitud, caracteres ni contenido permitido.</td>
+              <td>A04:2021 Insecure Design</td>
+              <td>SAST, revisión de reglas de negocio, pruebas unitarias de validación.</td>
+              <td>Principalmente automática en pipeline, complementada con revisión manual.</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Falta de control de acceso</strong></td>
+              <td>El flujo inserta y lista comentarios sin evidencia de autenticación, autorización o moderación del recurso.</td>
+              <td>A01:2021 Broken Access Control</td>
+              <td>DAST, pruebas de autorización horizontal/vertical y revisión manual.</td>
+              <td>Ambas; la lógica de acceso exige comprobación manual además de pruebas automatizadas.</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>Gestión insegura del flujo de datos</strong></td>
+              <td>No se observan límites de consulta, cierre seguro de recursos ni manejo consistente de errores.</td>
+              <td>A05:2021 Security Misconfiguration</td>
+              <td>SAST, revisión de código, pruebas de robustez y análisis de observabilidad.</td>
+              <td>Automática para patrones; manual para verificar impacto real y trazabilidad.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-grid" style="margin-top: 1rem;" data-reveal>
+        <article class="code-card">
+          <div class="code-head">
+            <strong>Propuesta de código seguro</strong>
+            <span class="code-tone" aria-hidden="true">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </span>
+          </div>
+          <pre><code>// Ejemplo académico simplificado
+String comentario = request.getParameter("comentario");
+
+if (comentario == null) {
+    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Comentario requerido");
+    return;
+}
+
+comentario = comentario.trim();
+
+if (comentario.isEmpty() || comentario.length() > 300) {
+    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Comentario inválido");
+    return;
+}
+
+if (!request.isUserInRole("USER")) {
+    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acceso no autorizado");
+    return;
+}
+
+try (
+    Connection con = getConnection();
+    PreparedStatement ps = con.prepareStatement(
+        "INSERT INTO comentarios(texto, autor_id) VALUES (?, ?)"
+    )
+) {
+    ps.setString(1, comentario);
+    ps.setInt(2, getAuthenticatedUserId(request));
+    ps.executeUpdate();
+}
+
+try (
+    Connection con = getConnection();
+    PreparedStatement ps = con.prepareStatement(
+        "SELECT texto FROM comentarios ORDER BY id DESC LIMIT 20"
+    );
+    ResultSet rs = ps.executeQuery()
+) {
+    while (rs.next()) {
+        String seguro = org.owasp.encoder.Encode.forHtml(rs.getString("texto"));
+        out.println("&lt;p&gt;" + seguro + "&lt;/p&gt;");
+    }
+}</code></pre>
+        </article>
+
+        <article class="card">
+          <h3>Mejoras aplicadas</h3>
+          <ul>
+            <li><strong>Validación temprana:</strong> se controla nulidad, vacíos y longitud antes de persistir.</li>
+            <li><strong>Autorización explícita:</strong> el flujo exige rol antes de publicar comentarios.</li>
+            <li><strong>Codificación de salida:</strong> el contenido se renderiza en HTML de forma segura.</li>
+            <li><strong>Consulta acotada:</strong> se limita volumen y se ordena la lectura.</li>
+            <li><strong>Manejo de recursos:</strong> se usan bloques seguros para conexión y sentencias.</li>
+          </ul>
+
+          <div class="chips" style="margin-top: 1rem;">
+            <span class="chip"><i data-lucide="shield-alert"></i> Prevención</span>
+            <span class="chip"><i data-lucide="test-tube"></i> Validación</span>
+            <span class="chip"><i data-lucide="eye"></i> Visibilidad</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="split-note" data-reveal>
+        <article class="card">
+          <h3>Principio relacionado</h3>
+          <p>
+            La mejora no se entiende como reparación tardía, sino como incorporación de seguridad en el flujo normal de
+            desarrollo. El punto valioso es que estas decisiones pueden modelarse, probarse y automatizarse desde
+            etapas tempranas.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Relación con SAST y DAST</h3>
+          <p>
+            SAST ayuda a identificar patrones inseguros en código y dependencias antes de ejecutar el sistema. DAST
+            permite comprobar en ejecución si entradas maliciosas, fallos de autorización o respuestas inesperadas
+            siguen siendo explotables.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" id="reflexion">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="brain-circuit"></i>
+            6. Reflexión
+          </span>
+          <h2>La seguridad temprana no reemplaza criterio: lo exige</h2>
+        </div>
+        <p>
+          Shift Left Security no es un atajo mágico ni una colección de escáneres. Es una forma de trabajo más madura,
+          porque obliga a decidir antes, justificar mejor y asumir que cada decisión técnica deja una huella de riesgo.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card" data-reveal>
+          <h3>Sobre el rol del ingeniero</h3>
+          <p>
+            El ingeniero deja de ser un productor aislado de funcionalidades y pasa a ser un diseñador de sistemas
+            confiables. Eso exige comprender amenazas, dependencias, flujos de datos y límites operativos.
+          </p>
+        </article>
+
+        <article class="card" data-reveal>
+          <h3>Sobre las herramientas</h3>
+          <p>
+            Automatizar seguridad mejora consistencia, pero ninguna herramienta reemplaza análisis contextual. Un
+            escáner puede señalar patrones; interpretar criticidad, impacto y prioridad sigue siendo una tarea humana.
+          </p>
+        </article>
+
+        <article class="card" data-reveal>
+          <h3>Sobre el diseño</h3>
+          <p>
+            Muchas fallas no nacen por sintaxis incorrecta, sino por decisiones de diseño débiles. Por eso pensar
+            antes, modelar amenazas y definir reglas desde el inicio es una práctica de ingeniería, no solo de control.
+          </p>
+        </article>
+      </div>
+
+      <div class="callout" style="margin-top: 1rem;" data-reveal>
+        <strong>Reflexión final:</strong> la seguridad preventiva no debe verse como carga adicional, sino como una manera más inteligente de construir software. Cuando se adopta temprano, la seguridad deja de ser freno y pasa a ser calidad estructural.
+      </div>
+    </section>
+
+    <section class="section shell" id="referencias">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="section-kicker">
+            <i data-lucide="book-marked"></i>
+            Referencias
+          </span>
+          <h2>Fuentes clave del tema</h2>
+        </div>
+        <p>
+          Estas referencias sostienen la definición del enfoque, sus principios operativos y su relación con prácticas
+          actuales de desarrollo seguro.
+        </p>
+      </div>
+
+      <ul class="bibliography" data-reveal>
+        <li>
+          GitGuardian. (2025). <em>What is Shift Left Security?</em> GitGuardian.
+          <a href="https://www.gitguardian.com/glossary/what-is-shift-left-security" target="_blank" rel="noopener noreferrer">
+            https://www.gitguardian.com/glossary/what-is-shift-left-security
+          </a>
+        </li>
+        <li>
+          GitLab. (2026). <em>Shift left security: A complete guide.</em> GitLab.
+          <a href="https://about.gitlab.com/topics/devsecops/shift-left-security/" target="_blank" rel="noopener noreferrer">
+            https://about.gitlab.com/topics/devsecops/shift-left-security/
+          </a>
+        </li>
+        <li>
+          Nair, M. (2021, agosto 31). <em>Implementing shift left security effectively.</em> Snyk.
+          <a href="https://snyk.io/articles/shift-left-security/" target="_blank" rel="noopener noreferrer">
+            https://snyk.io/articles/shift-left-security/
+          </a>
+        </li>
+        <li>
+          OWASP. (2020). <em>OWASP DevSecOps Guideline - v-0.2.</em> OWASP.
+          <a href="https://owasp.org/www-project-devsecops-guideline/latest/00a-Overview" target="_blank" rel="noopener noreferrer">
+            https://owasp.org/www-project-devsecops-guideline/latest/00a-Overview
+          </a>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <div
+    class="image-modal"
+    id="diagramModal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="diagramModalTitle"
+  >
+    <div class="image-modal-backdrop" data-close-diagram></div>
+
+    <div class="image-modal-dialog" role="document">
+      <div class="image-modal-toolbar">
+        <strong id="diagramModalTitle">Arquitectura conceptual ampliada</strong>
+
+        <button
+          type="button"
+          class="image-modal-close"
+          id="closeDiagramModal"
+          aria-label="Cerrar imagen ampliada"
+          title="Cerrar"
+        >
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <figure class="image-modal-figure">
+        <img
+          src="./SL_Diagram_AWS.png"
+          alt="Diagrama ampliado de arquitectura con AWS WAF, registros, Athena y Lambda."
+          width="800"
+          height="800"
+        />
+      </figure>
+    </div>
+  </div>
+
+  <footer class="footer shell">
+    2026 · ULEAM · Software seguro desde el diseño. Todos los derechos reservados.
+  </footer>
+
+  <script>
+    const BLOG_CONFIG = {
+      institution: 'Universidad Laica "Eloy Alfaro de Manabí" - Ext. Chone',
+      theme: "Shift Left Security: Seguridad desde el inicio del desarrollo",
+      members: [
+        "Mendoza Paz Jahier Dario",
+        "Moreira Basurto Jose Leonel",
+        "Zambrano Guallimba Jordy Nickolay"
+      ],
+      subject: "Ciclos de Desarrollo de Software Seguro",
+      teacher: "Ing. Castillo Bravo Eliecer",
+      course: "Software - 6to Nivel",
+      year: "2026 - 1",
+      youtubeEmbed: "https://www.youtube.com/embed/vOpIbH4RQ70?cc_lang_pref=es&cc_load_policy=1&rel=0"
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+
+    function injectCoverData() {
+      $("#institutionName").textContent = BLOG_CONFIG.institution;
+      $("#themeName").textContent = BLOG_CONFIG.theme;
+      $("#subjectName").textContent = BLOG_CONFIG.subject;
+      $("#teacherName").textContent = BLOG_CONFIG.teacher;
+      $("#courseName").textContent = BLOG_CONFIG.course;
+      $("#yearName").textContent = BLOG_CONFIG.year;
+      $("#siteThemeTitle").textContent = BLOG_CONFIG.theme;
+      document.title = BLOG_CONFIG.theme + " | Blog Académico";
+
+      const membersList = $("#membersList");
+      membersList.innerHTML = "";
+
+      BLOG_CONFIG.members.forEach((member, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="meta-label">Integrante ${index + 1}</span>
+          <span class="meta-value">${member}</span>
+        `;
+        membersList.appendChild(li);
+      });
+
+      $("#youtubeFrame").src = BLOG_CONFIG.youtubeEmbed;
+    }
+
+    function renderIcons() {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function setupThemeToggle() {
+      const root = document.documentElement;
+      const toggle = $("#themeToggle");
+      let currentTheme = root.getAttribute("data-theme") || "dark";
+
+      function updateButton(theme) {
+        toggle.innerHTML = theme === "dark"
+          ? '<i data-lucide="sun"></i>'
+          : '<i data-lucide="moon"></i>';
+
+        toggle.setAttribute(
+          "aria-label",
+          theme === "dark" ? "Cambiar a tema claro" : "Cambiar a tema oscuro"
+        );
+
+        renderIcons();
+      }
+
+      updateButton(currentTheme);
+
+      toggle.addEventListener("click", () => {
+        currentTheme = currentTheme === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", currentTheme);
+        updateButton(currentTheme);
+      });
+    }
+
+    function setupReveal() {
+      const items = document.querySelectorAll("[data-reveal]");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        items.forEach((item) => item.classList.add("visible"));
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            entry.target.classList.toggle("visible", entry.isIntersecting);
+          });
+        },
+        {
+          threshold: 0.16,
+          rootMargin: "0px 0px -8% 0px"
+        }
+      );
+
+      items.forEach((item) => observer.observe(item));
+    }
+
+    function setupScrollSpy() {
+      const links = [...document.querySelectorAll(".topnav a[href^='#']")];
+      const sections = links
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+          if (!visible) return;
+
+          const id = "#" + visible.target.id;
+          links.forEach((link) => {
+            link.classList.toggle("is-active", link.getAttribute("href") === id);
+          });
+        },
+        {
+          rootMargin: "-36% 0px -48% 0px",
+          threshold: [0.1, 0.25, 0.5]
+        }
+      );
+
+      sections.forEach((section) => observer.observe(section));
+    }
+
+    function setupProgressBar() {
+      const bar = $("#progressBar");
+
+      function update() {
+        const scrollTop = window.scrollY;
+        const height = document.documentElement.scrollHeight - window.innerHeight;
+        const percent = height > 0 ? (scrollTop / height) * 100 : 0;
+        bar.style.width = percent + "%";
+      }
+
+      update();
+      window.addEventListener("scroll", update, { passive: true });
+      window.addEventListener("resize", update);
+    }
+
+    function setupImageModal() {
+      const modal = $("#diagramModal");
+      const openBtn = $("#openDiagramModal");
+      const closeBtn = $("#closeDiagramModal");
+
+      if (!modal || !openBtn || !closeBtn) return;
+
+      const closeTargets = modal.querySelectorAll("[data-close-diagram]");
+
+      function openModal() {
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      openBtn.addEventListener("click", openModal);
+      closeBtn.addEventListener("click", closeModal);
+
+      closeTargets.forEach((node) => {
+        node.addEventListener("click", closeModal);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+    }
+
+    function finalizeBoot() {
+      const root = document.documentElement;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          root.removeAttribute("data-booting");
+        });
+      });
+    }
+
+    function bootWhenReady() {
+      injectCoverData();
+      setupThemeToggle();
+      setupReveal();
+      setupScrollSpy();
+      setupProgressBar();
+      setupImageModal();
+
+      function waitForIcons() {
+        if (!window.lucide) {
+          setTimeout(waitForIcons, 40);
+          return;
+        }
+
+        renderIcons();
+        finalizeBoot();
+      }
+
+      waitForIcons();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bootWhenReady);
+    } else {
+      bootWhenReady();
+    }
+  </script>
+</body>
+</html>
