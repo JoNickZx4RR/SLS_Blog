@@ -1093,6 +1093,31 @@
         padding: 0.75rem;
       }
     }
+
+    /* ── Member photo styles ── */
+    .member-photo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+      border: 2px solid var(--color-border);
+      box-shadow: 0 0 0 3px rgba(127, 228, 255, 0.12);
+      flex-shrink: 0;
+      background: var(--color-panel);
+      transition: border-color var(--theme-transition), box-shadow var(--theme-transition);
+    }
+
+    .member-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .member-item .meta-value {
+      font-weight: 500;
+      color: var(--color-text);
+    }
   </style>
 
   <script>
@@ -1940,9 +1965,9 @@ try (
       institution: 'Universidad Laica "Eloy Alfaro de Manabí" - Ext. Chone',
       theme: "Shift Left Security: Seguridad desde el inicio del desarrollo",
       members: [
-        "Mendoza Paz Jahier Dario",
-        "Moreira Basurto Jose Leonel",
-        "Zambrano Guallimba Jordy Nickolay"
+        { name: "Mendoza Paz Jahier Dario",       photo: "./pfp_jahier.png" },
+        { name: "Moreira Basurto Jose Leonel",     photo: "./pfp_leonel.png"   },
+        { name: "Zambrano Guallimba Jordy Nickolay", photo: "./pfp_nick.jpeg" }
       ],
       subject: "Ciclos de Desarrollo de Software Seguro",
       teacher: "Ing. Castillo Bravo Eliecer",
@@ -1966,14 +1991,31 @@ try (
       const membersList = $("#membersList");
       membersList.innerHTML = "";
 
-      BLOG_CONFIG.members.forEach((member, index) => {
+      BLOG_CONFIG.members.forEach((member) => {
         const li = document.createElement("li");
+        li.style.borderBottom = "1px dashed var(--color-divider)";
+        li.style.paddingBottom = "0.6rem";
         li.innerHTML = `
-          <span class="meta-label">Integrante ${index + 1}</span>
-          <span class="meta-value">${member}</span>
+          <span class="member-item">
+            <img
+              class="member-photo"
+              src="${member.photo}"
+              alt="Foto de ${member.name}"
+              loading="lazy"
+              decoding="async"
+              width="52"
+              height="52"
+            />
+            <span class="meta-value">${member.name}</span>
+          </span>
         `;
         membersList.appendChild(li);
       });
+      // remove border from last item
+      if (membersList.lastElementChild) {
+        membersList.lastElementChild.style.borderBottom = "none";
+        membersList.lastElementChild.style.paddingBottom = "0";
+      }
 
       $("#youtubeFrame").src = BLOG_CONFIG.youtubeEmbed;
     }
